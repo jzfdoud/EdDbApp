@@ -11,9 +11,35 @@ namespace EdDbApp
     {
         static void Main() 
         {
-            TestConnection();
+            testMajorController();
+            //remember to change to which method you actually want to call.
         }
 
+        static void testMajorController()
+        {
+            var connection = new Connection("localhost", "sqlexpress", "EdDb");
+            var majorsCtrl = new MajorsController(connection);
+
+            var MajorARTC = majorsCtrl.GetByCode("ARTC");
+
+            //var newMajor = new Major(9)
+            //{
+            //    Code = "ARTC",
+            //    Description = "Ceramics",
+            //    MinSAT = 1237,
+                
+            //};
+            //var success1 = majorsCtrl.Insert(newMajor);
+
+
+            ////var majors3 = majorsCtrl.Delete(8);
+
+            //var majors = majorsCtrl.GetAll();
+            //var majors1 = majorsCtrl.GetByPk(3);
+            //var majors2 =  majorsCtrl.GetByPk(9);
+        }
+       
+      
         static void TestConnection()
         {
             var conn = new Connection("localhost", "sqlexpress", "EdDb");
