@@ -7,6 +7,9 @@ namespace EdDbLib
 {
     public class Major
     {
+        public static string SelectAll = "Select * From Major;";
+
+
         public int Id { get; set; } = 0;
 
         private string _code = string.Empty;

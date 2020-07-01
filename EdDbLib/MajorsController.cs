@@ -29,20 +29,26 @@ namespace EdDbLib
             //read looks at rows, if true move on to next row, if return false there are no more rows
             while (reader.Read())
             {
-                var id = Convert.ToInt32(reader["Id"]);
+                var major = LoadMajorInstance(reader);
+                
+                //add puts major in the collection of instances?
+                majors.Add(major);
+            }
+            reader.Close();
+            return majors;
+        }
+        
+        private Major LoadMajorInstance(SqlDataReader reader)
+        {       var id = Convert.ToInt32(reader["Id"]);
                 //do primary key first
                 var major = new Major(id);
                 //id first then instance because the id is private so you cant set it after creating it
                 major.Code = reader["Code"].ToString();
                 major.Description = reader["Description"].ToString();
                 major.MinSAT = Convert.ToInt32(reader["MinSAT"]);
-                majors.Add(major);
-                //add puts major in the collection of instances?
-            }
-            reader.Close();
-            return majors;
+            return major;
         }
-        
+
         public Major GetByPk(int Id)
         {
             var sql = $"Select * From Major Where Id = {Id}.";
@@ -56,11 +62,7 @@ namespace EdDbLib
             // if we get here we found major!
 
             reader.Read();
-            var id = Convert.ToInt32(reader["Id"]);
-            var major = new Major(id);
-            major.Code = reader["Code"].ToString();
-            major.Description = reader["Description"].ToString();
-            major.MinSAT = Convert.ToInt32(reader["MinSAT"]);
+            var major = LoadMajorInstance(reader);
 
             reader.Close();
             return major;
@@ -101,11 +103,7 @@ namespace EdDbLib
                 "Description = @Description, " +
                 "MinSAT = @MinSAT " +
                 "Where Id = @Id; ";
-            var sqlCmd = new SqlCommand(sql, Connection.sqlConnection);
-            sqlCmd.Parameters.AddWithValue("@Code", major.Code);
-            sqlCmd.Parameters.AddWithValue("@Description", major.Description);
-            sqlCmd.Parameters.AddWithValue("@MinSAT", major.MinSAT);
-            sqlCmd.Parameters.AddWithValue("@Id", major.Id);
+            var sqlCmd = CreateAndFillParameters(major,sql);
 
             var rowsAffected = sqlCmd.ExecuteNonQuery();
             switch (rowsAffected)
@@ -116,12 +114,21 @@ namespace EdDbLib
             }
         }
 
+        private SqlCommand CreateAndFillParameters(Major major, string sql)
+        {
+            var sqlCmd = new SqlCommand(sql, Connection.sqlConnection);
+            sqlCmd.Parameters.AddWithValue("@Code", major.Code);
+            sqlCmd.Parameters.AddWithValue("@Description", major.Description);
+            sqlCmd.Parameters.AddWithValue("@MinSAT", major.MinSAT);
+            return sqlCmd;
+        }
+
         public bool Insert(Major major)
         {
             var sql = "Insert Major " +
                 "(Code, Description, MinSAT) " +
                 "Values (@Code, @Description, @MinSAT);";
-            var sqlCmd = new SqlCommand(sql, Connection.sqlConnection);
+            var sqlCmd = CreateAndFillParameters(major, sql);
             sqlCmd.Parameters.AddWithValue("@Code", major.Code);
             sqlCmd.Parameters.AddWithValue("@Description", major.Description);
             sqlCmd.Parameters.AddWithValue("@MinSAT", major.MinSAT);
@@ -149,11 +156,7 @@ namespace EdDbLib
             // if we get here we found major!
 
             reader.Read();
-            var id = Convert.ToInt32(reader["Id"]);
-            var major = new Major(id);
-            major.Code = reader["Code"].ToString();
-            major.Description = reader["Description"].ToString();
-            major.MinSAT = Convert.ToInt32(reader["MinSAT"]);
+            var major = LoadMajorInstance(reader);
 
             reader.Close();
             return major;

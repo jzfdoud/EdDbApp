@@ -11,7 +11,7 @@ namespace EdDbApp
     {
         static void Main() 
         {
-            testMajorController();
+            TestStudentController();
             //remember to change to which method you actually want to call.
         }
 
@@ -40,14 +40,14 @@ namespace EdDbApp
         }
        
       
-        static void TestConnection()
+        static void TestStudentController()
         {
             var conn = new Connection("localhost", "sqlexpress", "EdDb");
             var studentsCtrl = new StudentsController(conn);
 
             var newStudent = new Student() 
             {
-                Firstname = "Eden",
+                Firstname = "Victoria",
                 Lastname = "Doud",
                 Statecode = "OH",
                 SAT = 1600,
@@ -56,23 +56,25 @@ namespace EdDbApp
             };
             // 'm' means treat double as a decimal. could also use convert.decimal  
 
-            var Eden = new Student(61)
-            {
-                Firstname = "Eden",
-                Lastname = "Doud",
-                Statecode = "OH",
-                SAT = 1600,
-                GPA = 4.0m,
-                MajorId = 3
-            };
-            var itWorked = studentsCtrl.Update(Eden);
-            //var itWorked = studentsCtrl.Insert(newStudent);
+            var itWorked = studentsCtrl.Insert(newStudent, "ARTC");
 
-            itWorked = studentsCtrl.Delete(61);
+            //var Eden = new Student(61)
+            //{
+            //    Firstname = "Eden",
+            //    Lastname = "Doud",
+            //    Statecode = "OH",
+            //    SAT = 1600,
+            //    GPA = 4.0m,
+            //    MajorId = 3
+            //};
+            //var itWorked = studentsCtrl.Update(Eden);
+            ////var itWorked = studentsCtrl.Insert(newStudent);
 
-            var student = studentsCtrl.GetByPk(10);
-            var noStudent = studentsCtrl.GetByPk(-1);
-            var students = studentsCtrl.GetAll();
+            //itWorked = studentsCtrl.Delete(61);
+
+            //var student = studentsCtrl.GetByPk(10);
+            //var noStudent = studentsCtrl.GetByPk(-1);
+            //var students = studentsCtrl.GetAll();
 
             conn.Close();
         }
