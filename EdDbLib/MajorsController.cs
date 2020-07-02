@@ -6,17 +6,16 @@ using System.Linq.Expressions;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
+
 namespace EdDbLib
 {
-    public class MajorsController
+    public class MajorsController : BaseController
     {
-        public Connection Connection { get; private set; } = null;
+        
         //connection has the sqlconnection instance that is open
         // create sql statement
-        public MajorsController(Connection connection)
-        {
-            Connection = connection;
-        }
+        public MajorsController(Connection connection) : base(connection)
+        { }
         //create the sql command passing the sql statement and open sql connection
         public List<Major> GetAll()
         {

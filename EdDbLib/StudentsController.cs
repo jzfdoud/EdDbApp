@@ -5,9 +5,9 @@ using System.Data.SqlClient;
 
 namespace EdDbLib
 {
-    public class StudentsController
+    public class StudentsController : BaseController
     {
-        public Connection Connection { get; private set; } = null;
+        
         //all class instances are allowed to be null
 
         public bool Delete(int Id)
@@ -87,6 +87,18 @@ namespace EdDbLib
             }
             // if we get to here we found a student, read the record.
 
+            Student student = StudentParameters(reader);
+            if (!reader["MajorId"].Equals(DBNull.Value))
+            {
+                student.MajorId = Convert.ToInt32(reader["MajorId"]);
+            }
+            reader.Close();
+            return student;
+
+        }
+
+        private static Student StudentParameters(SqlDataReader reader)
+        {
             reader.Read();
             var id = Convert.ToInt32(reader["Id"]);
             var student = new Student(id);
@@ -96,13 +108,7 @@ namespace EdDbLib
             student.SAT = Convert.ToInt32(reader["SAT"]);
             student.GPA = Convert.ToDecimal(reader["GPA"]);
             student.MajorId = null;
-            if (!reader["MajorId"].Equals(DBNull.Value))
-            {
-                student.MajorId = Convert.ToInt32(reader["MajorId"]);
-            }
-            reader.Close();
             return student;
-
         }
 
         public List<Student> GetAll()
@@ -114,14 +120,8 @@ namespace EdDbLib
             var students = new List<Student>(60);
             while (reader.Read())
             {
-                var student = new Student();
-                student.Id = Convert.ToInt32(reader["Id"]);
-                student.Firstname = reader["Firstname"].ToString();
-                student.Lastname = reader["Lastname"].ToString();
-                student.Statecode = reader["StateCode"].ToString();
-                student.SAT = Convert.ToInt32(reader["SAT"]);
-                student.GPA = Convert.ToDecimal(reader["GPA"]);
-                student.MajorId = null;
+                var student = StudentParameters(reader);
+
                 if (!reader["MajorId"].Equals(DBNull.Value))
                 //dbvalue is null in sql not c#. C# keyword null != <null> (DBNull.value)-sql null
                 {
@@ -136,10 +136,8 @@ namespace EdDbLib
             return students;
         }
 
-        public StudentsController(Connection connection)
-        {
-            this.Connection = connection;
-        }
+        public StudentsController(Connection connection) : base(connection)
+        { }
 
 
     }

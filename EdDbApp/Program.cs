@@ -7,12 +7,28 @@ using EdDbLib;
 
 namespace EdDbApp
 {
-    class Program
+    public class Program
     {
         static void Main() 
         {
-            TestStudentController();
+            testClassesController();
             //remember to change to which method you actually want to call.
+        }
+
+        static void testClassesController()
+        {
+            var conn = new Connection("localhost", "sqlexpress", "EdDb");
+            var classesCtrl = new ClassesController(conn);
+
+            var classes = classesCtrl.GetAll();
+            //var newClas = new Clas()
+            //{
+            //    Code = "ART119",
+            //    Subject = "ART",
+            //    Section = 1
+            //};
+            conn.Close();
+
         }
 
         static void testMajorController()
