@@ -2,11 +2,31 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using System.Linq;
 
 namespace EdDbLib
 {
     public class ClassesController : BaseController
     {
+        public struct ClassesAndInstruct
+        {
+            public int Id { get; set; }
+            public string Subject { get; set; }
+            public int InstructorId { get; set; }
+            public string InstructorName { get; set; }
+        }
+        public IEnumerable<ClassesAndInstruct> GetClassesAndInstructors()
+        {
+            var classes = GetAll();
+            var instructor = new InstructorController(Connection);
+            var clas = from c in classes
+                       join i in instructor
+                       on c.Subject equals i.InstructorId
+                       select c;
+
+            return clas;
+
+        }
         
         public ClassesController(Connection connection) : base(connection) {}
 
