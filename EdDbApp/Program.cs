@@ -3,16 +3,29 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using EdDbLib;
+using System.Linq;
 
 
 namespace EdDbApp
 {
     public class Program
     {
+        private const string Server = "localhost";
+        private const string Instance = "sqlexpress";
+        private const string Database = "EdDb";
+
         static void Main() 
         {
-            testClassesController();
+            TestLinq();
             //remember to change to which method you actually want to call.
+        }
+
+        static void TestLinq()
+        {
+            var conn = new Connection(Server, Instance, Database);
+            var stdCtrl = new StudentsController(conn);
+            var students = stdCtrl.GetByLastname("E");
+            var studentsByState = stdCtrl.GetStudentsPerState();
         }
 
         static void testClassesController()

@@ -2,12 +2,67 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Dynamic;
 
 namespace EdDbLib
 {
     public class StudentsController : BaseController
     {
-        
+
+        public struct StudentAndMajor
+        {
+            public int Id { get; set; }
+            public string Fullname { get; set; }
+            public string Major { get; set; }
+        }
+
+        public IEnumerable<StudentAndMajor> GetStudentWithMajor()
+        {
+            var students = GetAll();
+            var majorCtrl = new MajorsController(Connection);
+            var studentMajor = from s in students
+                               join m in majorCtrl.GetAll()
+                               on s.MajorId equals m.Id
+                               select new StudentAndMajor
+                               {
+                                   Id = s.Id,
+                                   Fullname = $"{s.Firstname} {s.Lastname}",
+                                   Major = m.Description
+                               };
+            return studentMajor;
+        }
+
+        //structures similar to classes but cannot be null. Used when you have tp dream up some data used in one place. Can be called models-, something called a view like in sql?
+        public struct StudentsPerState
+        {
+            public string StateCode { get; set; }
+            public int Count { get; set; }
+        }
+        public IEnumerable<StudentsPerState> GetStudentsPerState()
+        {
+            var studentsPerState = from s in GetAll()
+                                   group s by s.Statecode into sc
+                                   select new StudentsPerState
+                                   {
+                                       StateCode = sc.Key, Count = sc.Count()
+                                   };
+            return studentsPerState;
+        }
+
+        //using LINQ to find students
+        public IEnumerable<Student> GetByLastname(string Lastname)
+        {
+            var students = GetAll(); /* students is now a collection of all students in the database*/
+            var someStudents = from s in students
+                               where s.Lastname.StartsWith(Lastname)
+                               orderby s.Lastname
+                               select s;
+
+            return someStudents;
+
+        }
+
         //all class instances are allowed to be null
 
         public bool Delete(int Id)

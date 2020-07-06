@@ -52,20 +52,20 @@ namespace EdDbLib
             return clas;
         }
 
-        public Clas GetByPk(int id)
-        {
-            var sql = $"Select * From Class Where Id = {id};";
-            var sqlCmd = new SqlCommand(sql, Connection.sqlConnection);
-            var reader = sqlCmd.ExecuteReader();
-            if (!reader.HasRows)
-            {
-                reader.Close();
-                return null;
-            }
+        //public Clas GetByPk(int id)
+        //{
+        //    var sql = $"Select * From Class Where Id = {id};";
+        //    var sqlCmd = new SqlCommand(sql, Connection.sqlConnection);
+        //    var reader = sqlCmd.ExecuteReader();
+        //    if (!reader.HasRows)
+        //    {
+        //        reader.Close();
+        //        return null;
+        //    }
 
-            Clas clas = ClassParameters(reader);
-            if()
-        }
+        //    Clas clas = ClassParameters(reader);
+            
+        //}
     }
 }
   
