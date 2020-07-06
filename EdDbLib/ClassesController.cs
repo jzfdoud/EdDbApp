@@ -10,19 +10,20 @@ namespace EdDbLib
     {
         public struct ClassesAndInstruct
         {
-            public int Id { get; set; }
-            public string Subject { get; set; }
-            public int InstructorId { get; set; }
-            public string InstructorName { get; set; }
+            public Class Clas { get; set; }
+            public Instructor Instructor { get; set; }
         }
         public IEnumerable<ClassesAndInstruct> GetClassesAndInstructors()
         {
-            var classes = GetAll();
-            var instructor = new InstructorController(Connection);
-            var clas = from c in classes
-                       join i in instructor
-                       on c.Subject equals i.InstructorId
-                       select c;
+           
+            var instCtrl = new InstructorController(Connection);
+            var clas = from c in GetAll()
+                       join i in instCtrl.GetAll()
+                       on c.InstructorId equals i.Id
+                       select new ClassesAndInstruct
+                       {
+                           Class =c, Instructor = i
+                       };
 
             return clas;
 
